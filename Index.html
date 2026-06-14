@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anime Realm — Live in Your Imagination</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Noto+Serif+JP:wght@300;400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:       #0a0614;
+    --deep:      #110a22;
+    --violet:    #2d1660;
+    --sakura:    #e8517a;
+    --gold:      #f0c060;
+    --moonwhite: #f2eeff;
+    --mist:      #b8a8d8;
+    --glow:      #c97aff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--moonwhite);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── STARS BACKGROUND ──────────────────────────────── */
+  #starfield {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse at 20% 50%, #1a073a 0%, #0a0614 60%);
+    pointer-events: none;
+  }
+  .star {
+    position: absolute; border-radius: 50%;
+    background: white; opacity: 0;
+    animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s);
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0; transform: scale(0.8); }
+    50%      { opacity: var(--op, 0.8); transform: scale(1.2); }
+  }
+
+  /* ── LOADING SCREEN ────────────────────────────────── */
+  #loader {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--ink);
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+
+  .loader-kanji {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), var(--glow), var(--sakura));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: 0.05em;
+    animation: pulse-glow 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%,100% { filter: drop-shadow(0 0 10px var(--glow)); }
+    50%      { filter: drop-shadow(0 0 30px var(--glow)) drop-shadow(0 0 60px var(--sakura)); }
+  }
+
+  .loader-sub {
+    margin-top: 1rem;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.9rem;
+    color: var(--mist);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .loader-bar-wrap {
+    margin-top: 2.5rem;
+    width: min(300px, 70vw);
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .loader-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sakura), var(--glow));
+    width: 0%;
+    transition: width 2.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .loader-credit {
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.2em;
+  }
+
+  /* ── SPRITE ANIMATION ──────────────────────────────── */
+  #sprite-wrap {
+    width: 180px; height: 180px;
+    margin-bottom: 1.5rem;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(201,122,255,0.3);
+    box-shadow: 0 0 40px rgba(201,122,255,0.2);
+  }
+  #sprite-canvas {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+  }
+
+  /* ── LAYOUT ────────────────────────────────────────── */
+  main { position: relative; z-index: 1; }
+
+  section { position: relative; }
+
+  /* ── HERO ──────────────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    overflow: hidden;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .orb-1 { width: 500px; height: 500px; background: rgba(45,22,96,0.8); top: -100px; left: -150px; }
+  .orb-2 { width: 400px; height: 400px; background: rgba(232,81,122,0.15); bottom: -80px; right: -100px; }
+  .orb-3 { width: 300px; height: 300px; background: rgba(201,122,255,0.1); top: 40%; left: 60%; }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--sakura);
+    margin-bottom: 1.2rem;
+  }
+
+  h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    background: linear-gradient(135deg, var(--moonwhite) 0%, var(--gold) 40%, var(--glow) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+
+  .hero-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(1rem, 3vw, 1.6rem);
+    color: var(--mist);
+    letter-spacing: 0.2em;
+    margin-bottom: 1rem;
+  }
+
+  .hero-tagline {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    color: rgba(242,238,255,0.55);
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: 3rem;
+  }
+
+  /* Hero sprite */
+  #hero-sprite {
+    width: clamp(120px, 25vw, 220px);
+    height: clamp(120px, 25vw, 220px);
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 2.5rem;
+    border: 3px solid rgba(201,122,255,0.4);
+    box-shadow:
+      0 0 0 8px rgba(201,122,255,0.06),
+      0 0 60px rgba(201,122,255,0.25),
+      0 0 120px rgba(232,81,122,0.1);
+  }
+  #hero-sprite canvas { width: 100%; height: 100%; display: block; }
+
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    font-size: 0.65rem; letter-spacing: 0.3em; color: var(--mist); opacity: 0.6;
+    animation: bounce-hint 2s ease-in-out infinite;
+  }
+  @keyframes bounce-hint {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(6px); }
+  }
+  .scroll-hint::after {
+    content: '▾';
+    font-size: 1rem;
+  }
+
+  /* ── SECTION HEADER ────────────────────────────────── */
+  .sec-header {
+    text-align: center;
+    padding: 5rem 1.5rem 3rem;
+  }
+  .sec-eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--sakura);
+    margin-bottom: 0.8rem;
+  }
+  .sec-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.6rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .sec-divider {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--glow), transparent);
+    margin: 1rem auto 0;
+  }
+
+  /* ── ERA TIMELINE ──────────────────────────────────── */
+  #eras {
+    padding: 0 1.5rem 6rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .era-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(45,22,96,0.5) 0%, rgba(17,10,34,0.8) 100%);
+    border: 1px solid rgba(201,122,255,0.15);
+    border-radius: 1rem;
+    padding: 2rem 2rem 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: default;
+  }
+  .era-card:hover {
+    border-color: rgba(201,122,255,0.4);
+    transform: translateX(6px);
+  }
+  .era-card::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(to bottom, var(--sakura), var(--glow));
+  }
+
+  .era-period {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: var(--gold);
+    margin-bottom: 0.3rem;
+  }
+  .era-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.75rem;
+    color: var(--mist);
+    letter-spacing: 0.2em;
+    margin-bottom: 1rem;
+  }
+  .era-desc {
+    font-size: 0.9rem;
+    color: rgba(242,238,255,0.7);
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+  }
+
+  .movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .movie-pill {
+    background: rgba(201,122,255,0.08);
+    border: 1px solid rgba(201,122,255,0.2);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.78rem;
+    color: var(--moonwhite);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .movie-pill:hover {
+    background: rgba(201,122,255,0.2);
+    border-color: var(--glow);
+  }
+  .movie-pill .year {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--sakura);
+    margin-bottom: 2px;
+  }
+
+  .era-tag {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    font-size: 0.65rem; letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--glow);
+    opacity: 0.5;
+  }
+
+  /* ── ABOUT / CREDIT ────────────────────────────────── */
+  #about {
+    text-align: center;
+    padding: 4rem 1.5rem 6rem;
+    background: linear-gradient(to bottom, transparent, rgba(45,22,96,0.3), transparent);
+  }
+  .about-body {
+    max-width: 600px;
+    margin: 1.5rem auto 0;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.95rem;
+    color: rgba(242,238,255,0.65);
+    line-height: 1.9;
+    font-weight: 300;
+  }
+  .credit-badge {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.6rem 1.6rem;
+    border: 1px solid rgba(201,122,255,0.3);
+    border-radius: 3rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--glow);
+    background: rgba(201,122,255,0.07);
+  }
+
+  /* ── FOOTER ────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid rgba(201,122,255,0.1);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.2em;
+  }
+  footer span { color: var(--sakura); }
+
+  /* ── REDUCED MOTION ────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- STARFIELD -->
+<div id="starfield"></div>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <div id="sprite-wrap">
+    <canvas id="loader-canvas" width="180" height="180"></canvas>
+  </div>
+  <div class="loader-kanji">アニメ</div>
+  <div class="loader-sub">Entering the Realm</div>
+  <div class="loader-bar-wrap">
+    <div class="loader-bar" id="loader-bar"></div>
+  </div>
+  <div class="loader-credit">Loading &amp; Dominating by Parnaz</div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-orb orb-1"></div>
+    <div class="hero-orb orb-2"></div>
+    <div class="hero-orb orb-3"></div>
+
+    <div>
+      <div class="hero-eyebrow">✦ Japanese Animation Universe ✦</div>
+      <div id="hero-sprite"><canvas id="hero-canvas" width="220" height="220"></canvas></div>
+      <h1>Anime Realm</h1>
+      <div class="hero-jp">アニメの世界へようこそ</div>
+      <div class="hero-tagline">Live in Your Imagination</div>
+    </div>
+
+    <div class="scroll-hint">Scroll</div>
+  </section>
+
+  <!-- ERAS -->
+  <section>
+    <div class="sec-header">
+      <div class="sec-eyebrow">✦ Through the Ages ✦</div>
+      <h2 class="sec-title">Every Era, Every Story</h2>
+      <p style="color:var(--mist);font-size:0.85rem;margin-top:0.8rem;font-style:italic;">A journey through the evolution of Japanese animation</p>
+      <div class="sec-divider"></div>
+    </div>
+
+    <div id="eras">
+
+      <div class="era-card">
+        <div class="era-tag">Origins</div>
+        <div class="era-period">1917 – 1950s</div>
+        <div class="era-jp">創世記 — Sōseiki</div>
+        <div class="era-desc">The birth of Japanese animation. Hand-drawn silhouettes and short theatrical films emerged, inspired by Western pioneers. Studios like Toei Animation were founded, laying the foundation for an entire art form.</div>
+        <div class="movies-grid">
+          <div class="movie-pill"><span class="year">1917</span>Namakura Gatana</div>
+          <div class="movie-pill"><span class="year">1918</span>Urashima Tarō</div>
+          <div class="movie-pill"><span class="year">1945</span>Momotarō: Sacred Sailors</div>
+        </div>
+      </div>
+
+      <div class="era-card">
+        <div class="era-tag">Golden Age</div>
+        <div class="era-period">1960s – 1970s</div>
+        <div class="era-jp">黄金時代 — Ōgon Jidai</div>
+        <div class="era-desc">Osamu Tezuka revolutionised anime with manga-influenced character design. TV anime exploded in popularity with mecha, sentai, and science fiction themes capturing the imagination of a generation.</div>
+        <div class="movies-grid">
+          <div class="movie-pill"><span class="year">1963</span>Astro Boy</div>
+          <div class="movie-pill"><span class="year">1966</span>Jungle Emperor Leo</div>
+          <div class="movie-pill"><span class="year">1972</span>Devilman</div>
+          <div class="movie-pill"><span class="year">1974</span>Heidi of the Alps</div>
+          <div class="movie-pill"><span class="year">1979</span>Mobile Suit Gundam</div>
+        </div>
+      </div>
+
+      <div class="era-card">
+        <div class="era-tag">Renaissance</div>
+        <div class="era-period">1980s</div>
+        <div class="era-jp">復興 — Fukkō</div>
+        <div class="era-desc">The OVA market boomed and theatrical films achieved artistic heights never seen before. Studio Ghibli was born. Dark, mature storytelling pushed anime beyond children's entertainment into a global art form.</div>
+        <div class="movies-grid">
+          <div class="movie-pill"><span class="year">1982</span>Macross</div>
+          <div class="movie-pill"><span class="year">1983</span>Urusei Yatsura 2</div>
+          <div class="movie-pill"><span class="year">1984</span>Nausicaä</div>
+          <div class="movie-pill"><span class="year">1986</span>Castle in the Sky</div>
+          <div class="movie-pill"><span class="year">1988</span>Akira</div>
+          <div class="movie-pill"><span class="year">1988</span>Grave of the Fireflies</div>
+          <div class="movie-pill"><span class="year">1988</span>My Neighbor Totoro</div>
+        </div>
+      </div>
+
+      <div class="era-card">
+        <div class="era-tag">Global Awakening</div>
+        <div class="era-period">1990s</div>
+        <div class="era-jp">世界への目覚め — Sekai e no Mezame</div>
+        <div class="era-desc">Anime reached Western shores in earnest. Philosophical mecha, magical girls, and cyberpunk thrillers redefined what animation could say. Anno, Oshii, and Miyazaki produced their masterpieces.</div>
+        <div class="movies-grid">
+          <div class="movie-pill"><span class="year">1992</span>Sailor Moon</div>
+          <div class="movie-pill"><span class="year">1993</span>Patlabor 2</div>
+          <div class="movie-pill"><span class="year">1995</span>Ghost in the Shell</div>
+          <div class="movie-pill"><span class="year">1995</span>Neon Genesis Evangelion</div>
+          <div class="movie-pill"><span class="year">1997</span>Princess Mononoke</div>
+          <div class="movie-pill"><span class="year">1998</span>Cowboy Bebop</div>
+          <div class="movie-pill"><span class="year">1999</span>One Piece</div>
+        </div>
+      </div>
+
+      <div class="era-card">
+        <div class="era-tag">Digital Era</div>
+        <div class="era-period">2000s</div>
+        <div class="era-jp">デジタル時代 — Dejitaru Jidai</div>
+        <div class="era-desc">Digital ink replaced cels entirely. Anime found a global fanbase through internet streaming. Spirited Away won the Academy Award. Isekai, shōnen battle epics, and slice-of-life genres flourished.</div>
+        <div class="movies-grid">
+          <div class="movie-pill"><span class="year">2001</span>Spirited Away</div>
+          <div class="movie-pill"><span class="year">2003</span>Fullmetal Alchemist</div>
+          <div class="movie-pill"><span class="year">2003</span>Wolf's Rain</div>
+          <div class="movie-pill"><span class="year">2006</span>Paprika</div>
+          <div class="movie-pill"><span class="year">2007</span>Gurren Lagann</div>
+          <div class="movie-pill"><span class="year">2009</span>Eden of the East</div>
+        </div>
+      </div>
+
+      <div class="era-card">
+        <div class="era-tag">Streaming Age</div>
+        <div class="era-period">2010s</div>
+        <div class="era-jp">配信時代 — Haishin Jidai</div>
+        <div class="era-desc">Netflix, Crunchyroll, and Funimation transformed distribution. Record-breaking films, landmark series, and a new generation of studios defined anime as the world's most-watched animation style.</div>
+        <div class="movies-grid">
+          <div class="movie-pill"><span class="year">2011</span>Madoka Magica</div>
+          <div class="movie-pill"><span class="year">2013</span>Attack on Titan</div>
+          <div class="movie-pill"><span class="year">2016</span>Your Name</div>
+          <div class="movie-pill"><span class="year">2017</span>Made in Abyss</div>
+          <div class="movie-pill"><span class="year">2019</span>Weathering with You</div>
+          <div class="movie-pill"><span class="year">2019</span>Demon Slayer</div>
+        </div>
+      </div>
+
+      <div class="era-card">
+        <div class="era-tag">Now & Beyond</div>
+        <div class="era-period">2020s – Present</div>
+        <div class="era-jp">現代 — Gendai</div>
+        <div class="era-desc">Anime dominates global pop culture. Record cinema runs, AI-assisted production, and a new wave of creators push boundaries. The imagination has no limits — the story never ends.</div>
+        <div class="movies-grid">
+          <div class="movie-pill"><span class="year">2021</span>Jujutsu Kaisen 0</div>
+          <div class="movie-pill"><span class="year">2021</span>Evangelion: 3.0+1.0</div>
+          <div class="movie-pill"><span class="year">2022</span>The Boy and the Heron</div>
+          <div class="movie-pill"><span class="year">2023</span>Suzume</div>
+          <div class="movie-pill"><span class="year">2024</span>Dungeon Meshi</div>
+          <div class="movie-pill"><span class="year">2025+</span>The Future Awaits…</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="sec-eyebrow">✦ About This Realm ✦</div>
+    <h2 class="sec-title" style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold);">Live in Your Imagination</div>
+    <p class="about-body">
+      This realm is a love letter to Japanese animation — to every hand-drawn frame, every impossible world, 
+      every character who taught us what it means to be brave, gentle, or endlessly curious. 
+      From flickering black-and-white silhouettes of 1917 to the luminous theatrical spectacles of today, 
+      anime is not just entertainment. It is a portal. A language. A way of dreaming.
+    </p>
+    <div class="credit-badge">✦ Loading &amp; Dominating by Parnaz ✦</div>
+  </section>
+
+</main>
+
+<footer>
+  <p>アニメレルム &nbsp;|&nbsp; <span>Live in Your Imagination</span> &nbsp;|&nbsp; Created with ♥ by Parnaz</p>
+</footer>
+
+<script>
+// ── STARS ─────────────────────────────────────────
+(function() {
+  const sf = document.getElementById('starfield');
+  for (let i = 0; i < 180; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%; left:${Math.random()*100}%;
+      --d:${2+Math.random()*4}s;
+      --delay:-${Math.random()*5}s;
+      --op:${0.4+Math.random()*0.6};
+    `;
+    sf.appendChild(s);
+  }
+})();
+
+// ── SPRITE ANIMATION ENGINE ───────────────────────
+function SpritePlayer(canvas, folder, prefix, first, last, fps) {
+  const ctx = canvas.getContext('2d');
+  const total = last - first + 1; // 77 frames (000-076)
+  let current = 0;
+  const images = [];
+  let loaded = 0;
+  let playing = false;
+  let interval = null;
+
+  // Pad number to 3 digits
+  function pad(n) { return String(n).padStart(3, '0'); }
+
+  function draw() {
+    if (images[current] && images[current].complete) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(images[current], 0, 0, canvas.width, canvas.height);
+    }
+    current = (current + 1) % total;
+  }
+
+  function startPlay() {
+    if (playing) return;
+    playing = true;
+    interval = setInterval(draw, 1000 / fps);
+  }
+
+  // Preload all frames
+  for (let i = 0; i < total; i++) {
+    const img = new Image();
+    const frameNum = first + i;
+    img.src = `images/${prefix}${pad(frameNum)}.jpg`;
+    img.onload = () => {
+      loaded++;
+      if (loaded === total && !playing) startPlay();
+      // Draw placeholder progress
+      if (i === 0) {
+        ctx.fillStyle = 'rgba(45,22,96,0.8)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(201,122,255,0.3)';
+        ctx.font = `${canvas.width * 0.12}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('✦', canvas.width/2, canvas.height/2);
+      }
+    };
+    img.onerror = () => {
+      // Frame failed — draw a beautiful fallback mandala
+      loaded++;
+      if (loaded === total && !playing) startPlayFallback();
+    };
+    images.push(img);
+  }
+
+  function startPlayFallback() {
+    // Animated fallback: rotating mandala
+    let angle = 0;
+    playing = true;
+    function drawMandala() {
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const cx = w/2, cy = h/2;
+
+      // Background
+      const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, w/2);
+      bg.addColorStop(0, '#2d1660');
+      bg.addColorStop(1, '#0a0614');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      // Petals
+      for (let p = 0; p < 8; p++) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle + (p * Math.PI * 2 / 8));
+        ctx.beginPath();
+        ctx.ellipse(0, -w*0.2, w*0.06, w*0.18, 0, 0, Math.PI*2);
+        const g = ctx.createLinearGradient(0, -w*0.38, 0, 0);
+        g.addColorStop(0, 'rgba(232,81,122,0.9)');
+        g.addColorStop(1, 'rgba(201,122,255,0.1)');
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Inner ring
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.beginPath();
+      ctx.arc(0, 0, w*0.12, 0, Math.PI*2);
+      const ig = ctx.createRadialGradient(0, 0, 0, 0, 0, w*0.12);
+      ig.addColorStop(0, '#f0c060');
+      ig.addColorStop(1, '#c97aff');
+      ctx.fillStyle = ig;
+      ctx.fill();
+      ctx.restore();
+
+      angle += 0.015;
+      requestAnimationFrame(drawMandala);
+    }
+    drawMandala();
+  }
+
+  return { startPlay };
+}
+
+// ── LOADER CANVAS ──────────────────────────────────
+// The loader canvas shows the sprite animation during loading.
+// We'll use the same image set as the hero.
+const FOLDER   = 'images/';
+const PREFIX   = 'InShot_20260614_154616359_';
+const FIRST    = 0;
+const LAST     = 76;
+const FPS      = 18;
+
+const loaderCanvas = document.getElementById('loader-canvas');
+const heroCanvas   = document.getElementById('hero-canvas');
+
+const loaderPlayer = SpritePlayer(loaderCanvas, FOLDER, PREFIX, FIRST, LAST, FPS);
+
+// ── LOADING SEQUENCE ──────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const bar   = document.getElementById('loader-bar');
+  const loader = document.getElementById('loader');
+
+  // Animate the bar
+  setTimeout(() => { bar.style.width = '100%'; }, 100);
+
+  setTimeout(() => {
+    loader.classList.add('hidden');
+    // Start hero canvas with same animation
+    SpritePlayer(heroCanvas, FOLDER, PREFIX, FIRST, LAST, FPS);
+  }, 2800);
+});
+
+// ── INTERSECTION REVEAL ───────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = e.target.classList.contains('era-card')
+        ? 'translateX(0)' : 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.era-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateX(-30px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+</script>
+
+</body>
+</html>
