@@ -1,9 +1,30 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Anime Realm — Live in Your Imagination</title>
+
+<!-- ── SEO ── -->
+<title>Anime Realm — Live in Your Imagination | Japanese Animation Universe</title>
+<meta name="description" content="Explore the magical world of Japanese anime through every era — from 1917 to today. A fantasy journey through the greatest anime films and series of all time. Created by Parnaz.">
+<meta name="keywords" content="anime, japanese animation, Studio Ghibli, Howl's Moving Castle, Attack on Titan, Demon Slayer, Spirited Away, anime history, anime eras, manga, otaku">
+<meta name="author" content="Parnaz">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://PARNAZFANTASY.github.io/anime-site/">
+
+<!-- ── OPEN GRAPH (واتساپ، تلگرام، توییتر) ── -->
+<meta property="og:title" content="Anime Realm — Live in Your Imagination">
+<meta property="og:description" content="A fantasy journey through Japanese animation — every era, every story, every dream.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://PARNAZFANTASY.github.io/anime-site/">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Anime Realm — Live in Your Imagination">
+<meta name="twitter:description" content="A fantasy journey through Japanese animation — every era, every story, every dream.">
+
+<!-- ── THEME COLOR ── -->
+<meta name="theme-color" content="#0a0614">
+
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Noto+Serif+JP:wght@300;400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -355,13 +376,138 @@
   }
   footer span { color: var(--sakura); }
 
+  /* ── SAKURA TREE ───────────────────────────────────── */
+  #sakura-section { padding-bottom: 4rem; }
+  #tree-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+  }
+  #sakura-canvas {
+    width: min(500px, 95vw);
+    height: min(600px, 90vw);
+    display: block;
+  }
+
   /* ── REDUCED MOTION ────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
+
+  /* ── ENTER OVERLAY ─────────────────────────────────── */
+  #enter-overlay {
+    position: fixed; inset: 0; z-index: 99999;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at center, #1a073a 0%, #0a0614 70%);
+    transition: opacity 1s ease, visibility 1s ease;
+  }
+  #enter-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .enter-inner {
+    text-align: center;
+    padding: 2rem;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .enter-kanji {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2rem, 8vw, 5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), var(--glow), var(--sakura));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .enter-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    color: var(--moonwhite);
+    margin-bottom: 0.5rem;
+  }
+
+  .enter-sub {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.9rem;
+    color: var(--mist);
+    letter-spacing: 0.3em;
+    margin-bottom: 2.5rem;
+    font-style: italic;
+  }
+
+  #enter-btn {
+    position: relative;
+    background: transparent;
+    border: 1px solid rgba(201,122,255,0.5);
+    border-radius: 3rem;
+    padding: 1rem 2.5rem;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+    color: var(--moonwhite);
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+  #enter-btn:hover {
+    border-color: var(--glow);
+    transform: scale(1.05);
+  }
+  #enter-btn:active { transform: scale(0.97); }
+
+  .btn-glow {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(201,122,255,0.15), rgba(232,81,122,0.1));
+    border-radius: 3rem;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .enter-hint {
+    margin-top: 1.2rem;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.2em;
+  }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Anime Realm",
+  "url": "https://PARNAZFANTASY.github.io/anime-site/",
+  "description": "A fantasy journey through Japanese animation — every era, every story, every dream.",
+  "author": {
+    "@type": "Person",
+    "name": "Parnaz"
+  },
+  "inLanguage": "en",
+  "about": {
+    "@type": "Thing",
+    "name": "Japanese Animation",
+    "description": "History and exploration of anime from 1917 to present"
+  }
+}
+</script>
 </head>
 <body>
+
+<!-- ENTER OVERLAY -->
+<div id="enter-overlay">
+  <div class="enter-inner">
+    <div class="enter-kanji">アニメ</div>
+    <h2 class="enter-title">Anime Realm</h2>
+    <p class="enter-sub">Live in Your Imagination</p>
+    <button id="enter-btn" onclick="enterRealm()">
+      <span class="btn-glow"></span>
+      ✦ Enter the Realm ✦
+    </button>
+    <p class="enter-hint">~ music will play ~</p>
+  </div>
+</div>
+
+<!-- YOUTUBE AUDIO -->
+<div id="yt-player" style="display:none"></div>
 
 <!-- STARFIELD -->
 <div id="starfield"></div>
@@ -513,6 +659,19 @@
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- SAKURA TREE -->
+  <section id="sakura-section">
+    <div class="sec-header">
+      <div class="sec-eyebrow">✦ The Sakura Tree ✦</div>
+      <h2 class="sec-title">桜 — Sakura</h2>
+      <p style="color:var(--mist);font-size:0.85rem;margin-top:0.8rem;font-style:italic;">Scroll to awaken the blossoms</p>
+      <div class="sec-divider"></div>
+    </div>
+    <div id="tree-container">
+      <canvas id="sakura-canvas"></canvas>
     </div>
   </section>
 
@@ -689,7 +848,259 @@ window.addEventListener('DOMContentLoaded', () => {
   }, 2800);
 });
 
-// ── INTERSECTION REVEAL ───────────────────────────
+// ── SAKURA TREE ───────────────────────────────────
+(function() {
+  const canvas = document.getElementById('sakura-canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Set canvas resolution
+  function resize() {
+    const w = Math.min(500, window.innerWidth * 0.95);
+    const h = w * 1.2;
+    canvas.width = w;
+    canvas.height = h;
+    draw(blossomProgress);
+  }
+
+  // Branch structure
+  function drawBranch(x, y, angle, length, depth, maxDepth) {
+    if (depth > maxDepth || length < 3) return;
+    const x2 = x + Math.cos(angle) * length;
+    const y2 = y - Math.sin(angle) * length;
+
+    const t = depth / maxDepth;
+    const thickness = Math.max(1, (maxDepth - depth + 1) * 1.8);
+    const brown = `rgba(${80+depth*8},${40+depth*5},${20+depth*3},${0.9 - t*0.2})`;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = brown;
+    ctx.lineWidth = thickness;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Recurse
+    const spread = 0.35 + depth * 0.05;
+    drawBranch(x2, y2, angle + spread, length * 0.72, depth + 1, maxDepth);
+    drawBranch(x2, y2, angle - spread, length * 0.68, depth + 1, maxDepth);
+    if (depth < maxDepth - 1) {
+      drawBranch(x2, y2, angle + spread * 0.3, length * 0.6, depth + 2, maxDepth);
+    }
+  }
+
+  // Collect blossom positions
+  let blossomPoints = [];
+  function collectBranch(x, y, angle, length, depth, maxDepth) {
+    if (depth > maxDepth || length < 3) return;
+    const x2 = x + Math.cos(angle) * length;
+    const y2 = y - Math.sin(angle) * length;
+    if (depth >= maxDepth - 2) {
+      blossomPoints.push({ x: x2, y: y2, size: 3 + Math.random() * 5 });
+    }
+    const spread = 0.35 + depth * 0.05;
+    collectBranch(x2, y2, angle + spread, length * 0.72, depth + 1, maxDepth);
+    collectBranch(x2, y2, angle - spread, length * 0.68, depth + 1, maxDepth);
+    if (depth < maxDepth - 1) {
+      collectBranch(x2, y2, angle + spread * 0.3, length * 0.6, depth + 2, maxDepth);
+    }
+  }
+
+  // Draw roots at base
+  function drawRoots(cx, cy) {
+    ctx.save();
+    const rootAngles = [-0.3, -0.15, 0, 0.15, 0.3];
+    rootAngles.forEach(a => {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.quadraticCurveTo(
+        cx + Math.sin(a) * 30,
+        cy + 15,
+        cx + Math.sin(a) * 55,
+        cy + 8
+      );
+      ctx.strokeStyle = 'rgba(80,45,20,0.7)';
+      ctx.lineWidth = 4 - Math.abs(a) * 8;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  // Draw blossoms
+  function drawBlossom(x, y, size, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    // 5 petals
+    for (let p = 0; p < 5; p++) {
+      const angle = (p / 5) * Math.PI * 2 - Math.PI / 2;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.ellipse(0, -size * 0.7, size * 0.45, size * 0.7, 0, 0, Math.PI * 2);
+      const g = ctx.createRadialGradient(0, -size * 0.4, 0, 0, -size * 0.7, size * 0.8);
+      g.addColorStop(0, '#ffe0ee');
+      g.addColorStop(0.5, '#f2a0c0');
+      g.addColorStop(1, '#e8517a');
+      ctx.fillStyle = g;
+      ctx.fill();
+      ctx.restore();
+    }
+    // Center dot
+    ctx.beginPath();
+    ctx.arc(x, y, size * 0.25, 0, Math.PI * 2);
+    ctx.fillStyle = '#f0c060';
+    ctx.fill();
+    // Stamens
+    for (let s = 0; s < 6; s++) {
+      const sa = (s / 6) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + Math.cos(sa) * size * 0.5, y + Math.sin(sa) * size * 0.5);
+      ctx.strokeStyle = 'rgba(240,192,96,0.6)';
+      ctx.lineWidth = 0.7;
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // Falling petals
+  let petals = [];
+  function spawnPetal(x, y) {
+    petals.push({
+      x, y,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: 0.5 + Math.random() * 1,
+      rot: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.08,
+      size: 2 + Math.random() * 3,
+      alpha: 0.7 + Math.random() * 0.3,
+      life: 1
+    });
+  }
+
+  let blossomProgress = 0;
+
+  function draw(progress) {
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    const cx = W / 2;
+    const baseY = H - 40;
+    const trunkLen = H * 0.28;
+    const maxDepth = 8;
+
+    // Ground mist
+    const mist = ctx.createLinearGradient(0, H - 60, 0, H);
+    mist.addColorStop(0, 'transparent');
+    mist.addColorStop(1, 'rgba(45,22,96,0.4)');
+    ctx.fillStyle = mist;
+    ctx.fillRect(0, H - 60, W, 60);
+
+    // Draw trunk and branches
+    ctx.save();
+    drawBranch(cx, baseY, Math.PI / 2, trunkLen, 0, maxDepth);
+    ctx.restore();
+
+    // Roots at base
+    drawRoots(cx, baseY);
+
+    // Draw blossoms based on progress
+    const total = blossomPoints.length;
+    const visible = Math.floor(total * progress);
+    for (let i = 0; i < visible; i++) {
+      const b = blossomPoints[i];
+      const alpha = Math.min(1, (progress * total - i) * 2);
+      drawBlossom(b.x, b.y, b.size, alpha);
+
+      // Spawn falling petals occasionally
+      if (progress > 0.3 && Math.random() < 0.002) {
+        spawnPetal(b.x, b.y);
+      }
+    }
+
+    // Draw falling petals
+    petals.forEach(p => {
+      ctx.save();
+      ctx.globalAlpha = p.alpha * p.life;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, p.size, p.size * 0.6, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#e8517a';
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function animatePetals() {
+    petals.forEach(p => {
+      p.x += p.vx + Math.sin(Date.now() * 0.001) * 0.3;
+      p.y += p.vy;
+      p.rot += p.rotSpeed;
+      p.life -= 0.003;
+    });
+    petals = petals.filter(p => p.life > 0 && p.y < canvas.height);
+    if (blossomProgress > 0.1) draw(blossomProgress);
+    requestAnimationFrame(animatePetals);
+  }
+
+  // Init
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Collect blossom points after resize
+  function init() {
+    blossomPoints = [];
+    const cx = canvas.width / 2;
+    const baseY = canvas.height - 40;
+    collectBranch(cx, baseY, Math.PI / 2, canvas.height * 0.28, 0, 8);
+  }
+  init();
+  window.addEventListener('resize', init);
+
+  // Scroll-triggered bloom
+  const section = document.getElementById('sakura-section');
+  window.addEventListener('scroll', () => {
+    const rect = section.getBoundingClientRect();
+    const winH = window.innerHeight;
+    const start = winH * 0.9;
+    const end = -rect.height * 0.3;
+    const progress = 1 - Math.max(0, Math.min(1, (rect.top - end) / (start - end)));
+    blossomProgress = progress;
+    draw(progress);
+  });
+
+  animatePetals();
+})();
+
+// Howl's Moving Castle — Merry-Go-Round of Life
+var ytPlayer;
+function onYouTubeIframeAPIReady() {
+  ytPlayer = new YT.Player('yt-player', {
+    height: '0', width: '0',
+    videoId: 'f7SS57LFPco',
+    playerVars: { autoplay: 0, loop: 1, playlist: 'f7SS57LFPco' }
+  });
+}
+
+// Load YouTube API
+(function() {
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+})();
+
+function enterRealm() {
+  // Hide overlay
+  document.getElementById('enter-overlay').classList.add('hidden');
+  // Play music
+  if (ytPlayer && ytPlayer.playVideo) {
+    ytPlayer.playVideo();
+  }
+}
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -710,3 +1121,4 @@ document.querySelectorAll('.era-card').forEach(el => {
 
 </body>
 </html>
+            
