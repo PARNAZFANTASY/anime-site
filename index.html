@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -376,18 +376,80 @@
   }
   footer span { color: var(--sakura); }
 
-  /* ── SAKURA TREE ───────────────────────────────────── */
-  #sakura-section { padding-bottom: 4rem; }
-  #tree-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem 1rem;
+  /* ── PARALLAX GALLERY ──────────────────────────────── */
+  #parallax-section {
+    position: relative;
   }
-  #sakura-canvas {
-    width: min(500px, 95vw);
-    height: min(600px, 90vw);
-    display: block;
+
+  .parallax-slide {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .parallax-bg {
+    position: absolute;
+    inset: -20%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform 0.1s linear;
+    will-change: transform;
+  }
+
+  .parallax-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10,6,20,0.5) 0%,
+      rgba(10,6,20,0.2) 40%,
+      rgba(10,6,20,0.2) 60%,
+      rgba(10,6,20,0.7) 100%
+    );
+  }
+
+  .parallax-text {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .parallax-text.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .parallax-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    color: var(--sakura);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .parallax-text h3 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 700;
+    color: var(--moonwhite);
+    text-shadow: 0 0 40px rgba(201,122,255,0.5);
+    margin-bottom: 1rem;
+  }
+
+  .parallax-text p {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(0.85rem, 2vw, 1.1rem);
+    color: rgba(242,238,255,0.8);
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.05em;
   }
 
   /* ── REDUCED MOTION ────────────────────────────────── */
@@ -506,9 +568,6 @@
   </div>
 </div>
 
-<!-- YOUTUBE AUDIO -->
-<div id="yt-player" style="display:none"></div>
-
 <!-- STARFIELD -->
 <div id="starfield"></div>
 
@@ -543,6 +602,37 @@
     </div>
 
     <div class="scroll-hint">Scroll</div>
+  </section>
+
+  <!-- PARALLAX GALLERY -->
+  <section id="parallax-section">
+    <div class="parallax-slide" id="slide-1">
+      <div class="parallax-bg" style="background-image:url('https://drive.google.com/uc?export=view&id=1Dh7ho4NP6yDAuVVjyBSzi6I04TvFvTSe')"></div>
+      <div class="parallax-overlay"></div>
+      <div class="parallax-text">
+        <div class="parallax-eyebrow">✦ Chapter I ✦</div>
+        <h3>City of Dreams</h3>
+        <p>Where the moon watches over a world of endless wonder</p>
+      </div>
+    </div>
+    <div class="parallax-slide" id="slide-2">
+      <div class="parallax-bg" style="background-image:url('https://drive.google.com/uc?export=view&id=1Dj7XqUuHQnXQSiI6nYFsCDgzqxhKQ3jY')"></div>
+      <div class="parallax-overlay"></div>
+      <div class="parallax-text">
+        <div class="parallax-eyebrow">✦ Chapter II ✦</div>
+        <h3>The Misty Sea</h3>
+        <p>Sailing through ancient waters, toward the unknown horizon</p>
+      </div>
+    </div>
+    <div class="parallax-slide" id="slide-3">
+      <div class="parallax-bg" style="background-image:url('https://drive.google.com/uc?export=view&id=1E56Kp0TJmNeeMLPdCXozY-OLRK0umyKy')"></div>
+      <div class="parallax-overlay"></div>
+      <div class="parallax-text">
+        <div class="parallax-eyebrow">✦ Chapter III ✦</div>
+        <h3>Kingdom of Lanterns</h3>
+        <p>A thousand lights rising to the sky, carrying every dream</p>
+      </div>
+    </div>
   </section>
 
   <!-- ERAS -->
@@ -659,19 +749,6 @@
         </div>
       </div>
 
-    </div>
-  </section>
-
-  <!-- SAKURA TREE -->
-  <section id="sakura-section">
-    <div class="sec-header">
-      <div class="sec-eyebrow">✦ The Sakura Tree ✦</div>
-      <h2 class="sec-title">桜 — Sakura</h2>
-      <p style="color:var(--mist);font-size:0.85rem;margin-top:0.8rem;font-style:italic;">Scroll to awaken the blossoms</p>
-      <div class="sec-divider"></div>
-    </div>
-    <div id="tree-container">
-      <canvas id="sakura-canvas"></canvas>
     </div>
   </section>
 
@@ -848,258 +925,119 @@ window.addEventListener('DOMContentLoaded', () => {
   }, 2800);
 });
 
-// ── SAKURA TREE ───────────────────────────────────
+// ── PARALLAX SCROLL ───────────────────────────────
 (function() {
-  const canvas = document.getElementById('sakura-canvas');
-  const ctx = canvas.getContext('2d');
+  const slides = document.querySelectorAll('.parallax-slide');
 
-  // Set canvas resolution
-  function resize() {
-    const w = Math.min(500, window.innerWidth * 0.95);
-    const h = w * 1.2;
-    canvas.width = w;
-    canvas.height = h;
-    draw(blossomProgress);
-  }
+  function updateParallax() {
+    slides.forEach(slide => {
+      const rect = slide.getBoundingClientRect();
+      const winH = window.innerHeight;
 
-  // Branch structure
-  function drawBranch(x, y, angle, length, depth, maxDepth) {
-    if (depth > maxDepth || length < 3) return;
-    const x2 = x + Math.cos(angle) * length;
-    const y2 = y - Math.sin(angle) * length;
+      // Parallax bg movement
+      const bg = slide.querySelector('.parallax-bg');
+      const progress = (winH - rect.top) / (winH + rect.height);
+      const offset = (progress - 0.5) * 80;
+      if (bg) bg.style.transform = `translateY(${offset}px)`;
 
-    const t = depth / maxDepth;
-    const thickness = Math.max(1, (maxDepth - depth + 1) * 1.8);
-    const brown = `rgba(${80+depth*8},${40+depth*5},${20+depth*3},${0.9 - t*0.2})`;
-
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x2, y2);
-    ctx.strokeStyle = brown;
-    ctx.lineWidth = thickness;
-    ctx.lineCap = 'round';
-    ctx.stroke();
-
-    // Recurse
-    const spread = 0.35 + depth * 0.05;
-    drawBranch(x2, y2, angle + spread, length * 0.72, depth + 1, maxDepth);
-    drawBranch(x2, y2, angle - spread, length * 0.68, depth + 1, maxDepth);
-    if (depth < maxDepth - 1) {
-      drawBranch(x2, y2, angle + spread * 0.3, length * 0.6, depth + 2, maxDepth);
-    }
-  }
-
-  // Collect blossom positions
-  let blossomPoints = [];
-  function collectBranch(x, y, angle, length, depth, maxDepth) {
-    if (depth > maxDepth || length < 3) return;
-    const x2 = x + Math.cos(angle) * length;
-    const y2 = y - Math.sin(angle) * length;
-    if (depth >= maxDepth - 2) {
-      blossomPoints.push({ x: x2, y: y2, size: 3 + Math.random() * 5 });
-    }
-    const spread = 0.35 + depth * 0.05;
-    collectBranch(x2, y2, angle + spread, length * 0.72, depth + 1, maxDepth);
-    collectBranch(x2, y2, angle - spread, length * 0.68, depth + 1, maxDepth);
-    if (depth < maxDepth - 1) {
-      collectBranch(x2, y2, angle + spread * 0.3, length * 0.6, depth + 2, maxDepth);
-    }
-  }
-
-  // Draw roots at base
-  function drawRoots(cx, cy) {
-    ctx.save();
-    const rootAngles = [-0.3, -0.15, 0, 0.15, 0.3];
-    rootAngles.forEach(a => {
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.quadraticCurveTo(
-        cx + Math.sin(a) * 30,
-        cy + 15,
-        cx + Math.sin(a) * 55,
-        cy + 8
-      );
-      ctx.strokeStyle = 'rgba(80,45,20,0.7)';
-      ctx.lineWidth = 4 - Math.abs(a) * 8;
-      ctx.lineCap = 'round';
-      ctx.stroke();
-    });
-    ctx.restore();
-  }
-
-  // Draw blossoms
-  function drawBlossom(x, y, size, alpha) {
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    // 5 petals
-    for (let p = 0; p < 5; p++) {
-      const angle = (p / 5) * Math.PI * 2 - Math.PI / 2;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(angle);
-      ctx.beginPath();
-      ctx.ellipse(0, -size * 0.7, size * 0.45, size * 0.7, 0, 0, Math.PI * 2);
-      const g = ctx.createRadialGradient(0, -size * 0.4, 0, 0, -size * 0.7, size * 0.8);
-      g.addColorStop(0, '#ffe0ee');
-      g.addColorStop(0.5, '#f2a0c0');
-      g.addColorStop(1, '#e8517a');
-      ctx.fillStyle = g;
-      ctx.fill();
-      ctx.restore();
-    }
-    // Center dot
-    ctx.beginPath();
-    ctx.arc(x, y, size * 0.25, 0, Math.PI * 2);
-    ctx.fillStyle = '#f0c060';
-    ctx.fill();
-    // Stamens
-    for (let s = 0; s < 6; s++) {
-      const sa = (s / 6) * Math.PI * 2;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + Math.cos(sa) * size * 0.5, y + Math.sin(sa) * size * 0.5);
-      ctx.strokeStyle = 'rgba(240,192,96,0.6)';
-      ctx.lineWidth = 0.7;
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  // Falling petals
-  let petals = [];
-  function spawnPetal(x, y) {
-    petals.push({
-      x, y,
-      vx: (Math.random() - 0.5) * 1.5,
-      vy: 0.5 + Math.random() * 1,
-      rot: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.08,
-      size: 2 + Math.random() * 3,
-      alpha: 0.7 + Math.random() * 0.3,
-      life: 1
-    });
-  }
-
-  let blossomProgress = 0;
-
-  function draw(progress) {
-    const W = canvas.width, H = canvas.height;
-    ctx.clearRect(0, 0, W, H);
-
-    const cx = W / 2;
-    const baseY = H - 40;
-    const trunkLen = H * 0.28;
-    const maxDepth = 8;
-
-    // Ground mist
-    const mist = ctx.createLinearGradient(0, H - 60, 0, H);
-    mist.addColorStop(0, 'transparent');
-    mist.addColorStop(1, 'rgba(45,22,96,0.4)');
-    ctx.fillStyle = mist;
-    ctx.fillRect(0, H - 60, W, 60);
-
-    // Draw trunk and branches
-    ctx.save();
-    drawBranch(cx, baseY, Math.PI / 2, trunkLen, 0, maxDepth);
-    ctx.restore();
-
-    // Roots at base
-    drawRoots(cx, baseY);
-
-    // Draw blossoms based on progress
-    const total = blossomPoints.length;
-    const visible = Math.floor(total * progress);
-    for (let i = 0; i < visible; i++) {
-      const b = blossomPoints[i];
-      const alpha = Math.min(1, (progress * total - i) * 2);
-      drawBlossom(b.x, b.y, b.size, alpha);
-
-      // Spawn falling petals occasionally
-      if (progress > 0.3 && Math.random() < 0.002) {
-        spawnPetal(b.x, b.y);
+      // Text reveal
+      const text = slide.querySelector('.parallax-text');
+      if (rect.top < winH * 0.75 && rect.bottom > winH * 0.25) {
+        text.classList.add('visible');
+      } else {
+        text.classList.remove('visible');
       }
-    }
-
-    // Draw falling petals
-    petals.forEach(p => {
-      ctx.save();
-      ctx.globalAlpha = p.alpha * p.life;
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      ctx.beginPath();
-      ctx.ellipse(0, 0, p.size, p.size * 0.6, 0, 0, Math.PI * 2);
-      ctx.fillStyle = '#e8517a';
-      ctx.fill();
-      ctx.restore();
     });
   }
 
-  function animatePetals() {
-    petals.forEach(p => {
-      p.x += p.vx + Math.sin(Date.now() * 0.001) * 0.3;
-      p.y += p.vy;
-      p.rot += p.rotSpeed;
-      p.life -= 0.003;
-    });
-    petals = petals.filter(p => p.life > 0 && p.y < canvas.height);
-    if (blossomProgress > 0.1) draw(blossomProgress);
-    requestAnimationFrame(animatePetals);
-  }
-
-  // Init
-  resize();
-  window.addEventListener('resize', resize);
-
-  // Collect blossom points after resize
-  function init() {
-    blossomPoints = [];
-    const cx = canvas.width / 2;
-    const baseY = canvas.height - 40;
-    collectBranch(cx, baseY, Math.PI / 2, canvas.height * 0.28, 0, 8);
-  }
-  init();
-  window.addEventListener('resize', init);
-
-  // Scroll-triggered bloom
-  const section = document.getElementById('sakura-section');
-  window.addEventListener('scroll', () => {
-    const rect = section.getBoundingClientRect();
-    const winH = window.innerHeight;
-    const start = winH * 0.9;
-    const end = -rect.height * 0.3;
-    const progress = 1 - Math.max(0, Math.min(1, (rect.top - end) / (start - end)));
-    blossomProgress = progress;
-    draw(progress);
-  });
-
-  animatePetals();
+  window.addEventListener('scroll', updateParallax, { passive: true });
+  updateParallax();
 })();
 
-// Howl's Moving Castle — Merry-Go-Round of Life
-var ytPlayer;
-function onYouTubeIframeAPIReady() {
-  ytPlayer = new YT.Player('yt-player', {
-    height: '0', width: '0',
-    videoId: 'f7SS57LFPco',
-    playerVars: { autoplay: 0, loop: 1, playlist: 'f7SS57LFPco' }
-  });
+// ── MUSIC با Web Audio API ────────────────────────
+// ساخت موسیقی فانتزی با صداهای خالص - بدون نیاز به YouTube
+let audioCtx = null;
+let musicNodes = [];
+let musicPlaying = false;
+
+function createFantasyMusic() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
+  const masterGain = audioCtx.createGain();
+  masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 2);
+  masterGain.connect(audioCtx.destination);
+
+  // نت‌های ملودی Merry-Go-Round سبک
+  const notes = [523.25, 587.33, 659.25, 698.46, 783.99, 880, 783.99, 698.46,
+                 659.25, 587.33, 523.25, 493.88, 523.25, 587.33, 659.25, 523.25];
+  const durations = [0.4, 0.4, 0.4, 0.4, 0.8, 0.4, 0.4, 0.4,
+                     0.4, 0.4, 0.4, 0.4, 0.8, 0.4, 0.4, 0.8];
+
+  function playMelody(startTime) {
+    let t = startTime;
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.4, t + 0.05);
+      gain.gain.linearRampToValueAtTime(0, t + durations[i] - 0.05);
+      osc.start(t);
+      osc.stop(t + durations[i]);
+      t += durations[i];
+      musicNodes.push(osc);
+    });
+    return t;
+  }
+
+  // پد هارمونی پس‌زمینه
+  function playPad() {
+    const chords = [[261.63, 329.63, 392], [293.66, 369.99, 440], [261.63, 329.63, 392]];
+    let t = audioCtx.currentTime;
+    chords.forEach(chord => {
+      chord.forEach(freq => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(masterGain);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, t);
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.08, t + 0.5);
+        gain.gain.linearRampToValueAtTime(0.08, t + 3.5);
+        gain.gain.linearRampToValueAtTime(0, t + 4);
+        osc.start(t);
+        osc.stop(t + 4);
+        musicNodes.push(osc);
+      });
+      t += 4;
+    });
+  }
+
+  // شروع و لوپ
+  playMelody(audioCtx.currentTime + 0.5);
+  playPad();
+
+  // لوپ هر ۸ ثانیه
+  const loopInterval = setInterval(() => {
+    if (!musicPlaying) { clearInterval(loopInterval); return; }
+    playMelody(audioCtx.currentTime + 0.1);
+    playPad();
+  }, 8000);
 }
-
-// Load YouTube API
-(function() {
-  const tag = document.createElement('script');
-  tag.src = 'https://www.youtube.com/iframe_api';
-  document.head.appendChild(tag);
-})();
 
 function enterRealm() {
-  // Hide overlay
   document.getElementById('enter-overlay').classList.add('hidden');
-  // Play music
-  if (ytPlayer && ytPlayer.playVideo) {
-    ytPlayer.playVideo();
+  if (!musicPlaying) {
+    musicPlaying = true;
+    createFantasyMusic();
   }
 }
+
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
@@ -1121,4 +1059,5 @@ document.querySelectorAll('.era-card').forEach(el => {
 
 </body>
 </html>
+
             
